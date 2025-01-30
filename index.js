@@ -5,25 +5,26 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-// Serve static files from public directory
-app.use(express.static('public'));
+// Serve static files
+app.use('/public', express.static('public'));
+app.use('/viewjs', express.static('public/viewjs'));
+app.use('/css', express.static('public/css'));
+app.use('/packages', express.static('public/packages'));
 
-// Handle PHP files
-app.all('*.php', (req, res) => {
-  const phpFile = path.join(__dirname, 'public', req.path);
-  exec(`php ${phpFile}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error}`);
-      res.status(500).send(error.message);
-      return;
+// Handle PHP files and routing
+app.use('/', (req, res) => {
+  const phpScript = req.path === '/' ? '/public/index.php' : path.join(process.cwd(), req.path);
+  const cmd = `php ${phpScript}`;
+  
+  exec(cmd, {
+    env: {
+      ...process.env,
+      REQUEST_URI: req.url,
+      REQUEST_METHOD: req.method,
+      QUERY_STRING: req._parsedUrl.query || '',
+      DOCUMENT_ROOT: process.cwd()
     }
-    res.send(stdout);
-  });
-});
-
-// Default route to index.php
-app.get('/', (req, res) => {
-  exec(`php ${path.join(__dirname, 'public/index.php')}`, (error, stdout, stderr) => {
+  }, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${error}`);
       res.status(500).send(error.message);
