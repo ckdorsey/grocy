@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { spawn } = require('child_process');
 const app = express();
@@ -11,7 +10,7 @@ app.use('/css', express.static('public/css'));
 app.use('/packages', express.static('public/packages'));
 
 // Start PHP built-in server
-const php = spawn('php', ['-S', '0.0.0.0:8000', '-t', '.']);
+const php = spawn('php', ['-S', '127.0.0.1:8000', '-t', 'public']);
 
 php.stdout.on('data', (data) => {
   console.log(`PHP output: ${data}`);
@@ -26,10 +25,7 @@ app.use('/', (req, res) => {
   const url = `http://127.0.0.1:8000${req.url}`;
   req.pipe(require('http').request(url, (resp) => {
     resp.pipe(res);
-  })).on('error', (err) => {
-    console.error('Proxy error:', err);
-    res.status(500).send('Internal Server Error');
-  });
+  }));
 });
 
 app.listen(port, '0.0.0.0', () => {
