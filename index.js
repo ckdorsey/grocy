@@ -1,7 +1,5 @@
-
 const express = require('express');
-const { exec } = require('child_process');
-const path = require('path');
+const { spawn } = require('child_process');
 const app = express();
 const port = 3000;
 
@@ -11,27 +9,23 @@ app.use('/viewjs', express.static('public/viewjs'));
 app.use('/css', express.static('public/css'));
 app.use('/packages', express.static('public/packages'));
 
-// Handle PHP files and routing
+// Start PHP built-in server
+const php = spawn('php', ['-S', '127.0.0.1:8000', '-t', 'public']);
+
+php.stdout.on('data', (data) => {
+  console.log(`PHP output: ${data}`);
+});
+
+php.stderr.on('data', (data) => {
+  console.error(`PHP error: ${data}`);
+});
+
+// Proxy all requests to PHP server
 app.use('/', (req, res) => {
-  const phpScript = req.path === '/' ? '/public/index.php' : path.join(process.cwd(), req.path);
-  const cmd = `php ${phpScript}`;
-  
-  exec(cmd, {
-    env: {
-      ...process.env,
-      REQUEST_URI: req.url,
-      REQUEST_METHOD: req.method,
-      QUERY_STRING: req._parsedUrl.query || '',
-      DOCUMENT_ROOT: process.cwd()
-    }
-  }, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error}`);
-      res.status(500).send(error.message);
-      return;
-    }
-    res.send(stdout);
-  });
+  const url = `http://127.0.0.1:8000${req.url}`;
+  req.pipe(require('http').request(url, (resp) => {
+    resp.pipe(res);
+  }));
 });
 
 app.listen(port, '0.0.0.0', () => {
