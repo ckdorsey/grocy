@@ -139,13 +139,3 @@ LEFT JOIN cache__quantity_unit_conversions_resolved qucr
 	AND CASE WHEN rp.product_id != p_effective.id THEN p.qu_id_stock ELSE rp.qu_id END = qucr.from_qu_id
 	AND IFNULL(p_effective.qu_id_stock, p.qu_id_stock) = qucr.to_qu_id
 WHERE rp.not_check_stock_fulfillment = 1;
-ALTER TABLE users
-ADD role_type TEXT NOT NULL DEFAULT 'user' CHECK(role_type IN ('admin', 'user'));
-
--- Update existing users to have admin role
-UPDATE users SET role_type = 'admin' WHERE id IN (
-    SELECT user_id FROM user_permissions 
-    WHERE permission_id IN (
-        SELECT id FROM permission_hierarchy WHERE name = 'ADMIN'
-    )
-);
