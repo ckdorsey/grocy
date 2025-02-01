@@ -1,14 +1,45 @@
-﻿/* Main style customizations */
+/* Main style customizations */
 body {
 	font-family: 'Roboto', sans-serif;
 }
 
 .content-text {
 	font-size: 0.85rem;
+	line-height: 1.5;
+	margin-bottom: 1rem;
 }
 
 .responsive-button {
 	white-space: normal;
+	margin: 0.5rem 0;
+}
+
+/* Improved spacing for better readability */
+.container, .container-fluid {
+	padding: 1.5rem;
+}
+
+.card {
+	margin-bottom: 1.5rem;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.card-header {
+	padding: 0.75rem 1.25rem;
+	background-color: rgba(0,0,0,0.02);
+}
+
+.card-body {
+	padding: 1.25rem;
+}
+
+.form-group {
+	margin-bottom: 1.25rem;
+}
+
+.table td, .table th {
+	padding: 0.75rem;
+	vertical-align: middle;
 }
 
 .timeago-contextual {
