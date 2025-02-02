@@ -474,18 +474,41 @@ body.fixed-nav {
 	.navbar-collapse {
 		position: fixed;
 		top: 0;
-		right: -250px;
+		right: -280px;
 		bottom: 0;
-		width: 250px;
+		width: 280px;
 		height: 100vh !important;
 		background-color: #e5e5e5;
 		transition: right 0.3s ease;
 		display: block !important;
 		z-index: 1050;
+		padding: 1rem;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.navbar-collapse.show {
 		right: 0;
+		box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+	}
+
+	.navbar-collapse::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0,0,0,0.5);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+		z-index: -1;
+	}
+
+	.navbar-collapse.show::before {
+		opacity: 1;
+		pointer-events: auto;
 	}
 
 	.navbar-sidenav {

@@ -28,11 +28,17 @@ $(".navbar-sidenav .nav-link-collapse").click(function(e)
 	window.localStorage.setItem("sidebar_state", "expanded");
 });
 
-$(document).click(function(e) {
+$(document).on('click touchstart', function(e) {
 	if ($(window).width() <= 992) {
 		if (!$(e.target).closest('.navbar-collapse').length && !$(e.target).closest('.navbar-toggler').length) {
 			$('.navbar-collapse').removeClass('show');
 		}
+	}
+});
+
+$('.navbar-collapse a').on('click', function() {
+	if ($(window).width() <= 992) {
+		$('.navbar-collapse').removeClass('show');
 	}
 });
 
