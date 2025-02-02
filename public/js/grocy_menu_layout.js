@@ -28,6 +28,14 @@ $(".navbar-sidenav .nav-link-collapse").click(function(e)
 	window.localStorage.setItem("sidebar_state", "expanded");
 });
 
+$(document).click(function(e) {
+	if ($(window).width() <= 992) {
+		if (!$(e.target).closest('.navbar-collapse').length && !$(e.target).closest('.navbar-toggler').length) {
+			$('.navbar-collapse').removeClass('show');
+		}
+	}
+});
+
 if (window.localStorage.getItem("sidebar_state") === "collapsed")
 {
 	$("#sidenavToggler").click();
